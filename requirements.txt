@@ -1,0 +1,12 @@
+pandas
+numpy
+scikit-learn
+scipy
+nltk
+scikit-learn  
+matplotlib
+seaborn
+tensorflow
+tqdm
+jupyter
+notebook
