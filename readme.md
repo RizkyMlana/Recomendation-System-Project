@@ -28,7 +28,7 @@ Menjelaskan tujuan proyek yang menjawab pernyataan masalah:
 ## Data Understanding
 Dataset yang digunakan merupakan dataset dari Steam Video Game Dataset yang tersedia secara publik melalui Kaggle: https://www.kaggle.com/datasets/nikdavis/steam-store-games.
 
-Dataset ini terdiri dari 12.000+ entri game dengan beberapa fitur utama:
+Dataset ini terdiri dari 27.075 entri game dengan beberapa fitur utama:
 - appid: ID unik dari setiap game
 - name: Nama dari game
 - release_date: Tanggal rilis
