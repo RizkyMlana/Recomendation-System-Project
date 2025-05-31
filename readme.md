@@ -30,17 +30,26 @@ Dataset yang digunakan merupakan dataset dari Steam Video Game Dataset yang ters
 
 Dataset ini terdiri dari 12.000+ entri game dengan beberapa fitur utama:
 - appid: ID unik dari setiap game
-- name: Nama game
+- name: Nama dari game
 - release_date: Tanggal rilis
-- developer: Developer dari game
-- publisher: Publisher dari game
+- english : Menandakan apakah game tersebut support bahasa inggris
+- developer: Developer game
+- publisher: Publisher game
+- platforms : Platform yang support untuk memainkan game
+- required_age : Batas umur untuk memainkan game
 - categories: Kategori fitur seperti Multiplayer, Singleplayer, VR, dll
 - genres: Genre game (Action, Indie, RPG, dll)
-- tags: Tag yang diberikan pengguna
-- price: Harga game
+- steamspy_tags: Tag yang diberikan pengguna
 - rating: Rating rata-rata (jika tersedia)
-- positive_ratings dan negative_ratings: Jumlah rating positif dan negatif
-- short_description: Deskripsi singkat dari game
+- achievements : 
+- positive_ratings : Jumlah rating positive dari game
+- negative_ratings : Jumlah rating negative dari game
+- average_playtime : Rata rata playtime dari game
+- median_playtime : Nilai tengah atau Median dari game
+- owners : User yang memilki game
+- price : Harga dari game dalam bentuk USD
+
+
 
 ## Data Preparation
 Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
