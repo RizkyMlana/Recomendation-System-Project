@@ -52,6 +52,17 @@ Dataset ini terdiri dari 27.075 entri game dengan beberapa fitur utama:
 1. Pemeriksaan Struktur Data, Missing Values dan Duplicate Data : <br>
 Dataset terdiri dari 27.075 baris dengan berbagai variabel seperti appid, name, release_date, english, developer, publisher, platforms, required_age, categories, genres, steamspy_tags, achievements, positive ratings, negtive ratings, average playtime, median playtime, owners, price. Hasil pengecekan menunjukkan bahwa terdapat missing values pada dataset tepatnya di kolom developer dan publisher
 2. Statisktik Deskriptif :<br>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <div>
 <table border="1" class="dataframe">
   <thead>
