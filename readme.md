@@ -52,6 +52,7 @@ Dataset ini terdiri dari 27.075 entri game dengan beberapa fitur utama:
 1. Pemeriksaan Struktur Data, Missing Values dan Duplicate Data : <br>
 Dataset terdiri dari 27.075 baris dengan berbagai variabel seperti appid, name, release_date, english, developer, publisher, platforms, required_age, categories, genres, steamspy_tags, achievements, positive ratings, negtive ratings, average playtime, median playtime, owners, price. Hasil pengecekan menunjukkan bahwa terdapat missing values pada dataset tepatnya di kolom developer dan publisher
 2. Statisktik Deskriptif :<br>
+<div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
@@ -63,7 +64,6 @@ Dataset terdiri dari 27.075 baris dengan berbagai variabel seperti appid, name, 
         text-align: right;
     }
 </style>
-<div>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -185,14 +185,14 @@ Insigt :<br>
 - Rating positif sangat tinggi dan skewed: beberapa game memiliki rating > 2juta, padahal median hanya 24. Ini mengindikasikan distribusi yang tidak merata
 - Playtime sangat bervariasi, dan mayoritas game memiliki nilai median playtime = 0, artinya banyak game tidak dimainkan lama atau hanya dicoba sebentar.
 - Age restriction: sebagian besar game tidak memiliki batasan usia (nilai median = 0), hanya sebagian kecil yang memerlukan umur ≥ 18.
-1. Cek Outlier :<br>
+3. Cek Outlier :<br>
    Setelah dilakukan analisis outlier menggunakan metode Interquartile Range (IQR), ditemukan sejumlah data yang berada di luar batas normal. Berikut adalah jumlah outlier pada masing-masing fitur numerik:<br>
    - Kolom price : 1975 Outlier
    - Kolom positive_ratings : 4286 Outlier
    - Kolom negative_ratings : 3957 Outlier
    - Kolom required_age : 596 Outlier
    - Kolom achievements : 1695 Outlier
-2. Visual
+4. Visual
    - Top 10 Genre Terpopuler<br>
     Insight: Genre seperti Action, Indie, dan Adventure menjadi yang paling dominan dalam dataset game ini.
     ![alt text](img/image.png)
