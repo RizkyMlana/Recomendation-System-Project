@@ -40,7 +40,6 @@ Dataset ini terdiri dari 27.075 entri game dengan beberapa fitur utama:
 - categories: Kategori fitur seperti Multiplayer, Singleplayer, VR, dll
 - genres: Genre game (Action, Indie, RPG, dll)
 - steamspy_tags: Tag yang diberikan pengguna
-- rating: Rating rata-rata (jika tersedia)
 - achievements : Jumlah Achievements dari game
 - positive_ratings : Jumlah rating positive dari game
 - negative_ratings : Jumlah rating negative dari game
@@ -208,6 +207,7 @@ Insigt :<br>
 2. Menghapus kolom yang tidak relevan dan konversi tipe data :<br>
    - Kolom appid dihapus karena tidak memiliki kontribusi terhadap proses pemodelan
    - Kolom numerik seperti achievements, positive_ratings, negative_ratings, average_playtime, median_playtime, price dikonversi ke tipe float agar dapat digunakan untuk analisis dan transformasi numerik
+    - Mengubah tipe data release_date ke datetime dan membuat fitur baru yaitu release_year yang diambil tahunnya untuk kebutuhan visualisasi dibagian Jumlah Game Dirilis per Tahun
     ```py
     df = df.drop(columns=['appid'], axis=1)
     df['achievements'] = df['achievements'].astype(float)
@@ -264,6 +264,19 @@ def get_recommendations(name, cosine_sim=cosine_sim):
     game_indices = [i[0] for i in sim_scores]
     return df[['name', 'genres', 'developer']].iloc[game_indices]
 ```
+
+
+Model : Content-Based Filtering (TF-IDF + Cosine Similarity)
+Model ini menggunakan pendekatan content-based filtering dengan menggabungkan informasi dari kolom genres dan developer untuk membentuk representasi teks gabungan (combined). Representasi teks ini kemudian diolah menggunakan TF-IDF Vectorizer untuk mengubah data teks menjadi vektor numerik, sehingga kemiripan antar game dapat dihitung menggunakan cosine similarity.
+
+Berikut adalah langkah-langkah kerja dari fungsi get_recommendations(name):<br>
+- Model menerima input berupa nama game (name).
+- Nama tersebut dicocokkan secara case-insensitive untuk mencari index-nya di dataset.
+- Setelah index ditemukan, model mengambil seluruh nilai cosine similarity antara game input dan semua game lain.
+- Nilai similarity kemudian disorting dari yang tertinggi ke terendah.
+- Game itu sendiri (yang similarity-nya 1) di-skip, lalu diambil 10 game teratas sebagai rekomendasi.
+- Model mengembalikan daftar rekomendasi yang berisi kolom name, genres, dan developer.
+
 Kelebihan :<br>
 - Tidak memerlukan interaksi atau data pengguna
 - Mengandalkan deskripsi konten yang tersedia
@@ -272,14 +285,84 @@ Kekurangan :<br>
 - Tidak memperhitungkan popularitas atau rating pengguna
 - Hanya fokus pada kemiripan konten, bukan perilaku pengguna
 
-## Evaluation
 
-Karena sistem ini menggunakan pendekatan content-based filtering tanpa data interaksi pengguna (seperti klik, rating, atau waktu bermain), maka evaluasi dilakukan secara **kualitatif/manual**.
-
-Metode evaluasi yang dilakukan:
-1. **Manual Inspection**: Menguji beberapa judul game populer, lalu mengecek apakah hasil rekomendasinya relevan berdasarkan genre, developer, atau kontennya.
-2. **Top-N Relevance Check**: Mengamati apakah daftar 10 teratas memiliki kemiripan konten dengan judul input.
-
+```py
+get_recommendations("Grand Theft Auto V")
+```
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>genres</th>
+      <th>developer</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>291</th>
+      <td>Manhunt</td>
+      <td>Action</td>
+      <td>Rockstar North</td>
+    </tr>
+    <tr>
+      <th>294</th>
+      <td>Grand Theft Auto</td>
+      <td>Action</td>
+      <td>Rockstar North</td>
+    </tr>
+    <tr>
+      <th>295</th>
+      <td>Grand Theft Auto 2</td>
+      <td>Action</td>
+      <td>Rockstar North</td>
+    </tr>
+    <tr>
+      <th>297</th>
+      <td>Grand Theft Auto IV</td>
+      <td>Action;Adventure</td>
+      <td>Rockstar North;Rockstar Toronto</td>
+    </tr>
+    <tr>
+      <th>298</th>
+      <td>Grand Theft Auto: Episodes from Liberty City</td>
+      <td>Action</td>
+      <td>Rockstar North / Toronto</td>
+    </tr>
+    <tr>
+      <th>288</th>
+      <td>Grand Theft Auto III</td>
+      <td>Action</td>
+      <td>Rockstar Games</td>
+    </tr>
+    <tr>
+      <th>289</th>
+      <td>Grand Theft Auto: Vice City</td>
+      <td>Action</td>
+      <td>Rockstar Games</td>
+    </tr>
+    <tr>
+      <th>290</th>
+      <td>Grand Theft Auto: San Andreas</td>
+      <td>Action</td>
+      <td>Rockstar Games</td>
+    </tr>
+    <tr>
+      <th>1230</th>
+      <td>Max Payne 3</td>
+      <td>Action</td>
+      <td>Rockstar Studios</td>
+    </tr>
+    <tr>
+      <th>17643</th>
+      <td>L.A. Noire: The VR Case Files</td>
+      <td>Violent;Action;Adventure</td>
+      <td>Rockstar Games</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 Contoh:
 Untuk input "Grand Theft Auto V", sistem merekomendasikan:
 - Manhunt
@@ -296,6 +379,14 @@ Untuk input "Grand Theft Auto V", sistem merekomendasikan:
 Hasil ini dianggap **relevan**, karena game-game tersebut memiliki genre aksi dunia terbuka (open-world action) yang serupa.
 
 > Karena tidak ada data relevansi eksplisit atau preferensi pengguna, maka metrik kuantitatif seperti Precision@K atau NDCG tidak dapat digunakan pada proyek ini.
+
+## Evaluation
+
+Karena sistem ini menggunakan pendekatan content-based filtering tanpa data interaksi pengguna (seperti klik, rating, atau waktu bermain), maka evaluasi dilakukan secara **kualitatif/manual**.
+
+Metode evaluasi yang dilakukan:
+1. **Manual Inspection**: Menguji beberapa judul game populer, lalu mengecek apakah hasil rekomendasinya relevan berdasarkan genre, developer, atau kontennya.
+2. **Top-N Relevance Check**: Mengamati apakah daftar 10 teratas memiliki kemiripan konten dengan judul input.
 
 ✅ Apakah Sudah Menjawab Problem Statements?<br>
 Yes.<br>
