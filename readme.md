@@ -388,6 +388,50 @@ Metode evaluasi yang dilakukan:
 1. **Manual Inspection**: Menguji beberapa judul game populer, lalu mengecek apakah hasil rekomendasinya relevan berdasarkan genre, developer, atau kontennya.
 2. **Top-N Relevance Check**: Mengamati apakah daftar 10 teratas memiliki kemiripan konten dengan judul input.
 
+```py
+def precision_at_k(recommended, relevant, k):
+    recommended_k = recommended[:k]
+    relevant_set = set(relevant)
+    return len([item for item in recommended_k if item in relevant_set]) / k
+
+def recall_at_k(recommended, relevant, k):
+    recommended_k = recommended[:k]
+    relevant_set = set(relevant)
+    return len([item for item in recommended_k if item in relevant_set]) / len(relevant) if relevant else 0
+
+def ndcg_at_k(recommended, relevant, k):
+    dcg = 0.0
+    for i, item in enumerate(recommended[:k]):
+        if item in relevant:
+            dcg += 1 / np.log2(i + 2)  # log base 2
+    idcg = sum([1 / np.log2(i + 2) for i in range(min(len(relevant), k))])
+    return dcg / idcg if idcg > 0 else 0
+
+```
+
+```py
+recommended_df, recommended_indices = get_recommendations("Grand Theft Auto V", top_n=10)
+
+target_genres = set(df[df['name'] == "Grand Theft Auto V"]['genres'].values[0].split(';'))
+relevant_indices = df[df['genres'].notna() & df['genres'].apply(lambda x: bool(target_genres.intersection(x.split(';'))))].index.tolist()
+
+k = 10
+precision = precision_at_k(recommended_indices, relevant_indices, k)
+recall = recall_at_k(recommended_indices, relevant_indices, k)
+ndcg = ndcg_at_k(recommended_indices, relevant_indices, k)
+
+print(f"Precision@{k}: {precision:.2f}")
+print(f"Recall@{k}: {recall:.2f}")
+print(f"NDCG@{k}: {ndcg:.2f}")
+
+```
+
+Dari hasil perhitungan metrik evaluasi kuantitatif pada sistem rekomendasi Top-N dengan parameter top_n = 10 dan k = 10, diperoleh nilai : <br>
+- Precision@10 sebesar 0.90
+- Recall@10 sebesar 0.00
+- NDCG@10 sebesar 0.94 
+Hal ini menunjukkan bahwa sistem mampu merekomendasikan item yang relevan secara presisi, namun belum mampu mencakup semua item relevan dalam dataset (recall rendah). Meskipun begitu, ranking atau posisi item relevan dalam daftar rekomendasi sudah cukup baik (NDCG tinggi).
+
 ✅ Apakah Sudah Menjawab Problem Statements?<br>
 Yes.<br>
 Problem statement menyatakan bahwa pengguna kesulitan menemukan game yang sesuai dengan preferensi mereka di tengah banyaknya pilihan game di pasar.
